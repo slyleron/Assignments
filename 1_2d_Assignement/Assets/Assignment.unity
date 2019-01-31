@@ -200,6 +200,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22f1b0c66956823468160106c89dcb35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  reachingup2: {fileID: 21300000, guid: 2fc016e28193c6e4280ce5c859447294, type: 3}
+  reachingup3: {fileID: 21300000, guid: 3c4f446870c302d4282695c896685c6e, type: 3}
+  running: {fileID: 21300000, guid: 668456dcf8f8e914c9d09c4f5c141edc, type: 3}
+  waittime: 0.25
+  updown: up
 --- !u!1 &428931834
 GameObject:
   m_ObjectHideFlags: 0
@@ -420,7 +425,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1729994483}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 077f8a5c2adc36b4da2b254968ac7b1a, type: 3}
   m_Name: 
