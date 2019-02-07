@@ -15,7 +15,8 @@ public class JumpAnimation : MonoBehaviour {
     private int movable;//if he can move or not
     //This is how I'd do the camera
     public GameObject theCamera;//import the camera
-    private float offset = 8;//how much to ofset the camera
+    public GameObject torch1;
+    private float repeat=5;
 
     // Use this for initialization
     void Start () {
@@ -28,7 +29,7 @@ public class JumpAnimation : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         //Function Calling
-		if(Input.GetKeyDown  (KeyCode.Space))
+		if(Input.GetKeyDown  (KeyCode.W))
         {
             
             if (updown == "up")
@@ -40,21 +41,30 @@ public class JumpAnimation : MonoBehaviour {
                 StartCoroutine(SpriteChangerFall(waittime));
             }
         }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+
+            StartCoroutine(SwingTorch(repeat));
+        }
         //Movement and camera movement
         if (Input.GetKey(KeyCode.D) && movable == 1)//This right here is so he can't move while jumping or throwing. 
         {
-            //This is how I'd do the camera
-            theCamera.transform.position =  Vector3.Lerp(theCamera.transform.position,transform.position + new Vector3(offset, theCamera.transform.position.y-transform.position.y, theCamera.transform.position.z - transform.position.z),.025f);
+            //This is how I do the camera
+           // theCamera.transform.position =  Vector3.Lerp(theCamera.transform.position,transform.position + new Vector3(offset, theCamera.transform.position.y-transform.position.y, theCamera.transform.position.z - transform.position.z),.025f);
             gameObject.GetComponent<SpriteRenderer>().flipX = false;//Had to do camera transform because it didn't want to play nicely with the other camera movement
-
+            
             transform.position = new Vector3(.1f+transform.position.x, transform.position.y, 0);
+        }
+        if (Mathf.Abs(theCamera.transform.position.x-transform.position.x)<6 )
+        {
+            theCamera.transform.position += new Vector3(Input.GetAxis("Mouse X") * Time.deltaTime, 0);
         }
         if (Input.GetKey(KeyCode.A) && movable == 1)
         {
-            //This is how I'd do the camera
-            theCamera.transform.position = Vector3.Lerp(theCamera.transform.position,transform.position + new Vector3(-offset, theCamera.transform.position.y - transform.position.y, theCamera.transform.position.z - transform.position.z),.025f);
+            //This is how I do the camera
+           // theCamera.transform.position = Vector3.Lerp(theCamera.transform.position,transform.position + new Vector3(-offset, theCamera.transform.position.y - transform.position.y, theCamera.transform.position.z - transform.position.z),.025f);
             gameObject.GetComponent<SpriteRenderer>().flipX = true;
-
+            
             transform.position = new Vector3(-.1f + transform.position.x, transform.position.y, 0);
         }
         healthbarstuff.GetComponent<Text>().text = "Hello world";//practicing with the UI, trying to make it work...maybe later :)
@@ -85,6 +95,14 @@ public class JumpAnimation : MonoBehaviour {
         this.GetComponent<SpriteRenderer>().sprite = running;
         updown = "up";
         movable = 1;
+    }
+    IEnumerator SwingTorch(float repeat)//rotate the torch in a circle
+    {
+       if (torch1.transform.position.x > repeat)
+       {
+            torch1.transform.position = new Vector3(torch1.transform.position.x * torch1.transform.position.x, torch1.transform.position.y+1, 0);
+       }
+        
     }
 
 }
