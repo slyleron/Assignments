@@ -209,7 +209,7 @@ MonoBehaviour:
   healthbarSize: {fileID: 554421418}
   ballofgoo: {fileID: 554421416}
   theCamera: {fileID: 1978147867}
-  torch_1: {fileID: 1898908670}
+  torch1: {fileID: 1898908670}
 --- !u!1 &428931834
 GameObject:
   m_ObjectHideFlags: 0

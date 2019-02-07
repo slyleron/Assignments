@@ -41,7 +41,7 @@ public class JumpAnimation : MonoBehaviour {
                 StartCoroutine(SpriteChangerFall(waittime));
             }
         }
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKey(KeyCode.Space))
         {
 
             StartCoroutine(SwingTorch(repeat));
@@ -98,11 +98,12 @@ public class JumpAnimation : MonoBehaviour {
     }
     IEnumerator SwingTorch(float repeat)//rotate the torch in a circle
     {
-       if (torch1.transform.position.x > repeat)
+       if (torch1.transform.position.x < repeat)
        {
-            torch1.transform.position = new Vector3(torch1.transform.position.x * torch1.transform.position.x, torch1.transform.position.y+1, 0);
+            torch1.transform.Rotate(Vector3.forward,Time.deltaTime,Space.World);
        }
-        
+        yield return new WaitForSeconds(waittime);
+
     }
 
 }
