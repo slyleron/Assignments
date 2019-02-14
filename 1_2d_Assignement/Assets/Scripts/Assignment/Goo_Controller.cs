@@ -7,7 +7,8 @@ public class Goo_Controller : MonoBehaviour {
    // public GameObject particle;
     public float movespeed=5;
     public int health;
-    public bool canjump;
+    public bool canjump=true;
+    public GameObject bullet;
     // Use this for initialization
     void Start () {
         health = 25;
@@ -23,22 +24,19 @@ public class Goo_Controller : MonoBehaviour {
         {
             goo.GetComponent<Rigidbody2D>().velocity = new Vector2(movespeed*-1, goo.GetComponent<Rigidbody2D>().velocity.y);
         }
-        if (Input.GetKeyDown(KeyCode.Space)&canjump)
+        if (Input.GetKeyDown(KeyCode.Space)&canjump==true)
         {
             goo.GetComponent<Rigidbody2D>().velocity = new Vector2(goo.GetComponent<Rigidbody2D>().velocity.x, goo.GetComponent<Rigidbody2D>().velocity.y+10);
             //particle.GetComponent<ParticleSystem>().emission.enabled;
-        }
-    }
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.tag == "ground")
-        {
-            canjump = true;
-            print("ground");
-        }
-        else
-        {
             canjump = false;
+            Instantiate(bullet, transform.position, Quaternion.identity);
         }
-    }
+        }
+    void OnTriggerEnter2D(Collider2D other)
+        {
+            
+                canjump = true;
+                print("ground");
+           
+        }
 }
