@@ -28,6 +28,7 @@ public class PickupController : PickupSetupScript
         if(other.tag== "Player")
         {
             print("pickedit up");
+            Destroy(gameObject);
         }
     }
 }
