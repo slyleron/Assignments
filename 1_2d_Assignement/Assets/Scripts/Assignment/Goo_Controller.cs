@@ -65,6 +65,7 @@ public class Goo_Controller : MonoBehaviour {
             //flybulletfly.transform.rotation = Quaternion.Euler (new Vector3(0, 0, (flybulletfly.transform.rotation.x/0.180f)*10));
             
             flybulletfly.GetComponent<Rigidbody2D>().velocity = flybulletfly.transform.forward*power*25;
+            flybulletfly.GetComponent<Rigidbody2D>().constraints= RigidbodyConstraints2D.None;
             //flybulletfly.GetComponent<Rigidbody2D>().velocity = flybulletfly.transform.InverseTransformDirection(flybulletfly.transform.right) * 25f * power;
             //flybulletfly.GetComponent<Rigidbody2D>().velocity = new Vector2(power*25f,power*25f)*flybulletfly.transform.rotation.Eu;
             power = 0;
