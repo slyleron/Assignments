@@ -31,4 +31,5 @@ public class PickupController : PickupSetupScript
             Destroy(gameObject);
         }
     }
+    
 }

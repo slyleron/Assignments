@@ -14,6 +14,7 @@ public class Shoot : MonoBehaviour {
     void Start () {
         m_Rigidbody = GetComponent<Rigidbody2D>();
         size = .25f;
+        canpickup = false;
     }
 	
 	// Update is called once per frame
