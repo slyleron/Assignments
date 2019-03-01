@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class Switch : MonoBehaviour {
     public string suspect;
@@ -21,13 +22,29 @@ public class Switch : MonoBehaviour {
     private int weapongint;
     private int roomgint;
     public Text answer;
+    public GameObject player1;
+    public GameObject player2;
+    public GameObject player3;
+    public GameObject player4;
+    private int activeplayerInt;
+    private GameObject activeplayer;
+    private Vector3 mouseX;
+    public float speed = 10f;
+    public GameObject floorboard1;
+    private int mapsize=10;
+    private int mapsizex = 1;
+    private int mapsizey = 1;
 
 
     // Use this for initialization
     void Start () {
-        suspectint = Random.Range(1, 4);
-        weaponint = Random.Range(1, 4);
-        roomint = Random.Range(1, 4);
+        mapsizey = 1;
+        mapsizex = 1;
+        mapsize = 10;
+        Mapmaker();
+        suspectint = UnityEngine.Random.Range(1, 4);
+        weaponint = UnityEngine.Random.Range(1, 4);
+        roomint = UnityEngine.Random.Range(1, 4);
         MurderMystery(fact);
         fact = suspect + " with " + weapon + " " + room;
         print(fact);
@@ -41,6 +58,11 @@ public class Switch : MonoBehaviour {
         roomgint = roomdropdown.GetComponent<Dropdown>().value;
         weapongint= weapondropdown.GetComponent<Dropdown>().value;
         Guess();
+        player1.transform.position = mouseX;
+        if (Input.GetMouseButton(0))
+        {
+            Walktomouse();
+        }
 
         if (suspectguess == suspect&& roomguess == room&& weaponguess == weapon)
         {
@@ -146,7 +168,64 @@ public class Switch : MonoBehaviour {
                 break;
         }
     }
+    private void OnTriggerEnter2D(Collision2D collision)
+    {
+        switch (gameObject.tag)
+        {
+            case "Billard room":
+                roomgint = 1; 
+           break;
+        }
+    }
+    void DarkenScreenSwitchPlayer()
+    {
+        switch (activeplayerInt)
+        {
+            case 1:
+                activeplayer = player1;
+                break;
+            case 2:
+                activeplayer = player2;
+                break;
+            case 3:
+                activeplayer = player3;
+                break;
+            case 4:
+                activeplayer = player4;
+                break;
 
+        }
+    }
+    void Walktomouse()
+    {
+
+        if (Camera.main.ScreenToWorldPoint(Input.mousePosition).x > Math.Round(mouseX.x))
+            mouseX.x = mouseX.x + speed * Time.deltaTime;
+        else if (Camera.main.ScreenToWorldPoint(Input.mousePosition).x < mouseX.x)
+            mouseX.x = mouseX.x - speed * Time.deltaTime;
+        if (Camera.main.ScreenToWorldPoint(Input.mousePosition).y > mouseX.y)
+            mouseX.y = mouseX.y + speed * Time.deltaTime;
+        else if (Camera.main.ScreenToWorldPoint(Input.mousePosition).y < mouseX.y)
+            mouseX.y = mouseX.y - speed * Time.deltaTime;
+        transform.position = mouseX;
+
+
+    }
+    void Mapmaker()
+    {
+        while (mapsize > mapsizex)
+        {
+            GameObject floorboardholder = Instantiate(floorboard1, new Vector2(transform.position.x + 2f*mapsizex, transform.position.y), Quaternion.Euler(new Vector3(0, 0, 0)));
+            mapsizex += 1;
+            print (mapsizex);
+        }
+        while (mapsize > mapsizey)
+        {
+            GameObject floorboardholder = Instantiate(floorboard1, new Vector2(transform.position.x , transform.position.y + 2f*mapsizey), Quaternion.Euler(new Vector3(0, 0, 0)));
+            mapsizey += 1;
+            print(mapsizey);
+        }
+    }
 
 
 }

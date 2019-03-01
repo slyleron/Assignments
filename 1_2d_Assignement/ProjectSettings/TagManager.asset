@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Pickup
   - ground
+  - Billard room
   layers:
   - Default
   - TransparentFX
