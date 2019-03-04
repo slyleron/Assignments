@@ -34,7 +34,8 @@ public class Switch : MonoBehaviour {
     private int mapsize=10;
     private int mapsizex = 1;
     private int mapsizey = 1;
-
+    private int mousetotheright = 0;
+    private int mousetotheup = 0;
 
     // Use this for initialization
     void Start () {
@@ -61,7 +62,7 @@ public class Switch : MonoBehaviour {
         player1.transform.position = mouseX;
         if (Input.GetMouseButton(0))
         {
-            Walktomouse();
+           //Walktomouse();
         }
 
         if (suspectguess == suspect&& roomguess == room&& weaponguess == weapon)
@@ -173,7 +174,8 @@ public class Switch : MonoBehaviour {
         switch (gameObject.tag)
         {
             case "Billard room":
-                roomgint = 1; 
+                roomgint = 1;
+                Guess();
            break;
         }
     }
@@ -199,14 +201,39 @@ public class Switch : MonoBehaviour {
     void Walktomouse()
     {
 
-        if (Camera.main.ScreenToWorldPoint(Input.mousePosition).x > Math.Round(mouseX.x))
-            mouseX.x = mouseX.x + speed * Time.deltaTime;
-        else if (Camera.main.ScreenToWorldPoint(Input.mousePosition).x < mouseX.x)
-            mouseX.x = mouseX.x - speed * Time.deltaTime;
-        if (Camera.main.ScreenToWorldPoint(Input.mousePosition).y > mouseX.y)
-            mouseX.y = mouseX.y + speed * Time.deltaTime;
-        else if (Camera.main.ScreenToWorldPoint(Input.mousePosition).y < mouseX.y)
-            mouseX.y = mouseX.y - speed * Time.deltaTime;
+        if (Camera.main.ScreenToWorldPoint(Input.mousePosition).x > mouseX.x + 1.5f)
+        {
+            mousetotheright += 1;
+            while (mousetotheright > mouseX.x)
+            {
+                mouseX.x = Mathf.Lerp(mouseX.x, mouseX.x + 2f, .1f);
+            }
+
+        }
+        else if (Camera.main.ScreenToWorldPoint(Input.mousePosition).x < mouseX.x - 1.5f)
+        {
+            mousetotheright -= 1;
+            while (mousetotheright < mouseX.x)
+            {
+                mouseX.x = Mathf.Lerp(mouseX.x, mouseX.x + 2f, .1f);
+            }
+        }
+        if (Camera.main.ScreenToWorldPoint(Input.mousePosition).y > mouseX.y + 1.5f)
+        {
+            mousetotheup += 1;
+            while (mousetotheup < mouseX.y)
+            {
+                mouseX.y = Mathf.Lerp(mouseX.y, mouseX.y + 2f, .1f);
+            }
+        }
+        else if (Camera.main.ScreenToWorldPoint(Input.mousePosition).y < mouseX.y - 1.5f)
+        {
+            mousetotheup -= 1;
+            while (mousetotheup < mouseX.y)
+            {
+                mouseX.y = Mathf.Lerp(mouseX.y, mouseX.y + 2f, .1f);
+            }
+        }
         transform.position = mouseX;
 
 
@@ -215,16 +242,20 @@ public class Switch : MonoBehaviour {
     {
         while (mapsize > mapsizex)
         {
-            GameObject floorboardholder = Instantiate(floorboard1, new Vector2(transform.position.x + 2f*mapsizex, transform.position.y), Quaternion.Euler(new Vector3(0, 0, 0)));
-            mapsizex += 1;
+            GameObject floorboardholder = Instantiate(floorboard1, new Vector2(transform.position.x + 2f*mapsizex-10f, transform.position.y - 10f), Quaternion.Euler(new Vector3(0, 0, 0)));
+            
             print (mapsizex);
+            while (mapsize > mapsizey)
+            {
+                GameObject floorboardholder1 = Instantiate(floorboard1, new Vector2(transform.position.x + 2f*mapsizex - 10f, transform.position.y + 2f * mapsizey - 10f), Quaternion.Euler(new Vector3(0, 0, 0)));
+                mapsizey += 1;
+                print(mapsizey);
+            }
+            mapsizex += 1;
+            mapsizey = 1;
+
         }
-        while (mapsize > mapsizey)
-        {
-            GameObject floorboardholder = Instantiate(floorboard1, new Vector2(transform.position.x , transform.position.y + 2f*mapsizey), Quaternion.Euler(new Vector3(0, 0, 0)));
-            mapsizey += 1;
-            print(mapsizey);
-        }
+       
     }
 
 
