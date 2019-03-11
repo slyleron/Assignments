@@ -8,6 +8,11 @@ public class Functions : MonoBehaviour {
      * you need to type which type (void....or other)
      * then have a {to start the argument
      */
+    private void Start()
+    {
+        print(Sum(5, 15));
+        print(Multi(5, 5));
+    }
     private void Update()
     {
         Weather(skyview);
@@ -44,7 +49,14 @@ public class Functions : MonoBehaviour {
 
     }
 
-
+    int Sum(int a,int b)
+    {
+        return a + b;
+    }
+    int Multi(int a, int b)
+    {
+        return a * b;
+    }
 
 
 }

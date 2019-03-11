@@ -27,15 +27,19 @@ public class Switch : MonoBehaviour {
     public GameObject player3;
     public GameObject player4;
     private int activeplayerInt;
-    private GameObject activeplayer;
+    public GameObject[] activeplayer;
     private Vector3 mouseX;
     public float speed = 10f;
     public GameObject floorboard1;
-    private int mapsize=10;
+    private int mapsize = 10;
     private int mapsizex = 1;
     private int mapsizey = 1;
     private int mousetotheright = 0;
     private int mousetotheup = 0;
+    public int charactersMove;
+    public Text movesText;
+    public KeyCode input;
+    private int [] activePlayerNext = {1,2,3,4};
 
     // Use this for initialization
     void Start () {
@@ -49,6 +53,10 @@ public class Switch : MonoBehaviour {
         MurderMystery(fact);
         fact = suspect + " with " + weapon + " " + room;
         print(fact);
+        DarkenScreenSwitchPlayer();
+        activeplayer[4] = { player1, player2, player3, player4 };
+        
+        
         
         
     }
@@ -70,6 +78,36 @@ public class Switch : MonoBehaviour {
             answer.GetComponent<Text>().text = "Correct! It was "+fact;
         }
         
+        if (Input.GetKeyUp(KeyCode.W))
+        {
+            if (charactersMove > 1)
+            {
+                charactersMove -= 1;
+                movesText.text = charactersMove.ToString();
+                activeplayer[1].transform.position = new Vector2(activeplayer[1].transform.position.x, activeplayer[1].transform.position.y + 2f);
+            }
+            else
+            {
+                DarkenScreenSwitchPlayer();
+                switch (activeplayerInt)
+                {
+                    case 1:
+                        activeplayerInt = activePlayerNext[1];
+                        break;
+                    case 2:
+                        activeplayerInt = activePlayerNext[2];
+                        break;
+                    case 3:
+                        activeplayerInt = activePlayerNext[3];
+                        break;
+                    case 4:
+                        activeplayerInt = activePlayerNext[4];
+                        break;
+
+                }
+                
+            }
+        }
         
     }
 
@@ -184,19 +222,21 @@ public class Switch : MonoBehaviour {
         switch (activeplayerInt)
         {
             case 1:
-                activeplayer = player1;
+                activeplayer[0] = player1.gameObject;
                 break;
             case 2:
-                activeplayer = player2;
+                activeplayer[1] = player2.gameObject;
                 break;
             case 3:
-                activeplayer = player3;
+                activeplayer[2] = player3.gameObject;
                 break;
             case 4:
-                activeplayer = player4;
+                activeplayer[3] = player4.gameObject;
                 break;
 
         }
+        charactersMove = UnityEngine.Random.Range(1, 6);
+        movesText.text = charactersMove.ToString();
     }
     void Walktomouse()
     {
@@ -257,6 +297,7 @@ public class Switch : MonoBehaviour {
         }
        
     }
+    
 
 
 }
