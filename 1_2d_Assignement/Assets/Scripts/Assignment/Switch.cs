@@ -26,39 +26,46 @@ public class Switch : MonoBehaviour {
     public GameObject player2;
     public GameObject player3;
     public GameObject player4;
-    private int activeplayerInt;
-    public GameObject[] activeplayer;
     private Vector3 mouseX;
-    public float speed = 10f;
+    public float speed = 18f;
     public GameObject floorboard1;
-    private int mapsize = 10;
+    private int mapsize = 36;
     private int mapsizex = 1;
     private int mapsizey = 1;
-    private int mousetotheright = 0;
-    private int mousetotheup = 0;
     public int charactersMove;
     public Text movesText;
     public KeyCode input;
-    private int [] activePlayerNext = {1,2,3,4};
+    public static int player;
+    private GameObject foreground;
+    private GameObject activeplayer2;
+    private int lastCharMove;
+    private Text switchMessage;
+    private Camera mainCamera;
+
+
 
     // Use this for initialization
     void Start () {
-        mapsizey = 1;
+        mainCamera = Camera.main;
+        switchMessage = GameObject.FindGameObjectWithTag("Text").GetComponent<Text>();
+        foreground = GameObject.FindGameObjectWithTag("Foreground");
+        foreground.SetActive(true);
+        foreground.SetActive(false);
+        mapsizey = 0;
         mapsizex = 1;
-        mapsize = 10;
+        mapsize = 12;
         Mapmaker();
         suspectint = UnityEngine.Random.Range(1, 4);
         weaponint = UnityEngine.Random.Range(1, 4);
-        roomint = UnityEngine.Random.Range(1, 4);
+        roomint = UnityEngine.Random.Range(1, 10);
         MurderMystery(fact);
         fact = suspect + " with " + weapon + " " + room;
         print(fact);
-        DarkenScreenSwitchPlayer();
-        activeplayer[4] = { player1, player2, player3, player4 };
-        
-        
-        
-        
+        charactersMove = UnityEngine.Random.Range(1, 6);
+        GameObject[] activeplayer = { player1, player2, player3, player4 };
+        activeplayer2 = player1;
+        switchMessage.text = "";
+
     }
 	
 	// Update is called once per frame
@@ -67,50 +74,102 @@ public class Switch : MonoBehaviour {
         roomgint = roomdropdown.GetComponent<Dropdown>().value;
         weapongint= weapondropdown.GetComponent<Dropdown>().value;
         Guess();
-        player1.transform.position = mouseX;
-        if (Input.GetMouseButton(0))
-        {
-           //Walktomouse();
-        }
-
+        mainCamera.transform.position = Vector3.Lerp(mainCamera.transform.position, new Vector3(activeplayer2.transform.position.x, activeplayer2.transform.position.y,mainCamera.transform.position.z),  .2f);
         if (suspectguess == suspect&& roomguess == room&& weaponguess == weapon)
         {
             answer.GetComponent<Text>().text = "Correct! It was "+fact;
         }
-        
-        if (Input.GetKeyUp(KeyCode.W))
+        switch (Input.inputString)
         {
-            if (charactersMove > 1)
-            {
+            case "w":
+                if (lastCharMove == 1)
+                {
+                    charactersMove += 2;
+                    lastCharMove = 0;
+                }
+                else lastCharMove = 3;
+                if (charactersMove > 0)
+                {
+                    activeplayer2.transform.position = new Vector2(activeplayer2.transform.position.x, activeplayer2.transform.position.y + 2f);
+                    charactersMove -= 1;
+                    movesText.text = charactersMove.ToString();
+                }
+                break;
+            case "a":
+                if (lastCharMove == 2)
+                {
+                    charactersMove += 2;
+                    lastCharMove = 0;
+                }
+                else lastCharMove = 4;
+                if (charactersMove > 0)
+                {
+                    activeplayer2.transform.position = new Vector2(activeplayer2.transform.position.x - 2f, activeplayer2.transform.position.y);
+                    charactersMove -= 1;
+                    movesText.text = charactersMove.ToString();
+                }
+                break;
+            case "s":
+                if (lastCharMove == 3)
+                {
+                    charactersMove += 2;
+                    lastCharMove = 0;
+                }
+                else lastCharMove = 1;
+                if (charactersMove > 0)
+                {
+                    activeplayer2.transform.position = new Vector2(activeplayer2.transform.position.x, activeplayer2.transform.position.y - 2f);
+                    charactersMove -= 1;
+                    movesText.text = charactersMove.ToString();
+                }
+                break;
+            case "d":
+                if (lastCharMove == 4)
+                {
+                    charactersMove += 2;
+                    lastCharMove = 0;
+                }
+                else lastCharMove = 2;
+                if (charactersMove > 0) {
+                activeplayer2.transform.position = new Vector2(activeplayer2.transform.position.x + 2f, activeplayer2.transform.position.y);
                 charactersMove -= 1;
                 movesText.text = charactersMove.ToString();
-                activeplayer[1].transform.position = new Vector2(activeplayer[1].transform.position.x, activeplayer[1].transform.position.y + 2f);
-            }
-            else
-            {
-                DarkenScreenSwitchPlayer();
-                switch (activeplayerInt)
-                {
-                    case 1:
-                        activeplayerInt = activePlayerNext[1];
-                        break;
-                    case 2:
-                        activeplayerInt = activePlayerNext[2];
-                        break;
-                    case 3:
-                        activeplayerInt = activePlayerNext[3];
-                        break;
-                    case 4:
-                        activeplayerInt = activePlayerNext[4];
-                        break;
-
                 }
-                
-            }
+                    break;
         }
-        
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            DarkenScreenSwitchPlayer();
+            switch (activeplayer2.name)
+            {
+                case "Player 1":
+                    switchMessage.text = "Turn Over. Player 2, ready, fight!";
+                    switchMessage.color = Color.yellow;
+                    activeplayer2 = player2;
+                    StartCoroutine(ShowScreen());
+                     break;
+                case "Player 2":
+                    switchMessage.text = "Turn Over. Player 3, ready, fight!";
+                    switchMessage.color = Color.green;
+                    activeplayer2 = player3;
+                    StartCoroutine(ShowScreen());
+                    break;
+                case "Player 3":
+                    switchMessage.text = "Turn Over. Player 4, ready, fight!";
+                    switchMessage.color = Color.blue;
+                    activeplayer2 = player4;
+                    StartCoroutine(ShowScreen());
+                    break;
+                case "Player 4":
+                    switchMessage.text = "Turn Over. Player 1, ready, fight!";
+                    switchMessage.color = Color.red;
+                    activeplayer2 = player1;
+                    StartCoroutine(ShowScreen());
+                    break;
+            }
+            lastCharMove = 0;
+        }    
     }
-
     void MurderMystery(string fact)
     {
         switch (suspectint)
@@ -146,16 +205,34 @@ public class Switch : MonoBehaviour {
         switch (roomint)
         {
             case 1:
-                room = "in the billard room!";
+                roomguess = "in the Billiard room!";
                 break;
             case 2:
-                room = "in the dining room!";
+                roomguess = "in the Dining room!";
                 break;
             case 3:
-                room = "in the kitchen!";
+                roomguess = "in the Ballroom!";
                 break;
             case 4:
-                room = "in the basement!";
+                roomguess = "in the Kitchen!";
+                break;
+            case 5:
+                roomguess = "in the Lounge!";
+                break;
+            case 6:
+                roomguess = "in the Hall!";
+                break;
+            case 7:
+                roomguess = "in the Conservtory!";
+                break;
+            case 8:
+                roomguess = "in the Library!";
+                break;
+            case 9:
+                roomguess = "in the Study!";
+                break;
+            case 10:
+                roomguess = "in the Staircase!";
                 break;
         }
     }
@@ -194,110 +271,114 @@ public class Switch : MonoBehaviour {
         switch (roomgint)
         {
             case 1:
-                roomguess = "in the billard room!";
+                roomguess = "in the Billiard room!";
                 break;
             case 2:
-                roomguess = "in the dining room!";
+                roomguess = "in the Dining room!";
                 break;
             case 3:
-                roomguess = "in the kitchen!";
+                roomguess = "in the Ballroom!";
                 break;
             case 4:
-                roomguess = "in the basement!";
+                roomguess = "in the Kitchen!";
+                break;
+            case 5:
+                roomguess = "in the Lounge!";
+                break;
+            case 6:
+                roomguess = "in the Hall!";
+                break;
+            case 7:
+                roomguess = "in the Conservtory!";
+                break;
+            case 8:
+                roomguess = "in the Library!";
+                break;
+            case 9:
+                roomguess = "in the Study!";
+                break;
+            case 10:
+                roomguess = "in the Staircase!";
                 break;
         }
     }
     private void OnTriggerEnter2D(Collision2D collision)
     {
-        switch (gameObject.tag)
+        switch (gameObject.name)
         {
-            case "Billard room":
+            case "Billiard":
                 roomgint = 1;
                 Guess();
            break;
+            case "Dining":
+                roomgint = 1;
+                Guess();
+                break;
+            case "Ballroom":
+                roomgint = 1;
+                Guess();
+                break;
+            case "Kitchen":
+                roomgint = 1;
+                Guess();
+                break;
+            case "Lounge":
+                roomgint = 1;
+                Guess();
+                break;
+            case "Hall":
+                roomgint = 1;
+                Guess();
+                break;
+            case "Conservtory":
+                roomgint = 1;
+                Guess();
+                break;
+            case "Library":
+                roomgint = 1;
+                Guess();
+                break;
+            case "Study":
+                roomgint = 1;
+                Guess();
+                break;
+            case "Staircase":
+                roomgint = 1;
+                Guess();
+                break;
         }
     }
-    void DarkenScreenSwitchPlayer()
+    public void DarkenScreenSwitchPlayer()
     {
-        switch (activeplayerInt)
-        {
-            case 1:
-                activeplayer[0] = player1.gameObject;
-                break;
-            case 2:
-                activeplayer[1] = player2.gameObject;
-                break;
-            case 3:
-                activeplayer[2] = player3.gameObject;
-                break;
-            case 4:
-                activeplayer[3] = player4.gameObject;
-                break;
 
-        }
         charactersMove = UnityEngine.Random.Range(1, 6);
         movesText.text = charactersMove.ToString();
+        foreground.SetActive(true);
     }
-    void Walktomouse()
+    IEnumerator ShowScreen()
     {
-
-        if (Camera.main.ScreenToWorldPoint(Input.mousePosition).x > mouseX.x + 1.5f)
-        {
-            mousetotheright += 1;
-            while (mousetotheright > mouseX.x)
-            {
-                mouseX.x = Mathf.Lerp(mouseX.x, mouseX.x + 2f, .1f);
-            }
-
-        }
-        else if (Camera.main.ScreenToWorldPoint(Input.mousePosition).x < mouseX.x - 1.5f)
-        {
-            mousetotheright -= 1;
-            while (mousetotheright < mouseX.x)
-            {
-                mouseX.x = Mathf.Lerp(mouseX.x, mouseX.x + 2f, .1f);
-            }
-        }
-        if (Camera.main.ScreenToWorldPoint(Input.mousePosition).y > mouseX.y + 1.5f)
-        {
-            mousetotheup += 1;
-            while (mousetotheup < mouseX.y)
-            {
-                mouseX.y = Mathf.Lerp(mouseX.y, mouseX.y + 2f, .1f);
-            }
-        }
-        else if (Camera.main.ScreenToWorldPoint(Input.mousePosition).y < mouseX.y - 1.5f)
-        {
-            mousetotheup -= 1;
-            while (mousetotheup < mouseX.y)
-            {
-                mouseX.y = Mathf.Lerp(mouseX.y, mouseX.y + 2f, .1f);
-            }
-        }
-        transform.position = mouseX;
-
-
+        yield return new WaitForSeconds(2);
+        foreground.SetActive(false);
+        switchMessage.text = "";
     }
+    
     void Mapmaker()
     {
         while (mapsize > mapsizex)
         {
-            GameObject floorboardholder = Instantiate(floorboard1, new Vector2(transform.position.x + 2f*mapsizex-10f, transform.position.y - 10f), Quaternion.Euler(new Vector3(0, 0, 0)));
+            //GameObject floorboardholder = Instantiate(floorboard1, new Vector2(transform.position.x + 2f*mapsizex-12f, transform.position.y - 10f), Quaternion.Euler(new Vector3(0, 0, 0)));
             
             print (mapsizex);
-            while (mapsize > mapsizey)
+            while (mapsize > mapsizey+1)
             {
-                GameObject floorboardholder1 = Instantiate(floorboard1, new Vector2(transform.position.x + 2f*mapsizex - 10f, transform.position.y + 2f * mapsizey - 10f), Quaternion.Euler(new Vector3(0, 0, 0)));
+                GameObject floorboardholder1 = Instantiate(floorboard1, new Vector2(transform.position.x + 2f*mapsizex - 12f, transform.position.y + 2f * mapsizey - 10f), Quaternion.Euler(new Vector3(0, 0, 0)));
                 mapsizey += 1;
                 print(mapsizey);
             }
             mapsizex += 1;
-            mapsizey = 1;
+            mapsizey = 0;
 
         }
        
     }
-    
-
-
 }
